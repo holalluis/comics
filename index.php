@@ -43,7 +43,7 @@
 	}
 ?>
 <!doctype html><html><head>
-	<meta charset=utf-8>
+	<?php include'meta.php'?>
 	<title>Còmics</title>
 	<link rel=stylesheet href=css.css>
 	<script>
@@ -100,7 +100,7 @@
 	</script>
 </head><body><center>
 <!--TRIA CLIENT--><?php include'triaClient.php'?>
-<!--TITLE--><h1>Còmics — <?php echo $client->nom?></h1>
+<!--TITLE--><h2 onclick=window.location.reload()>Còmics — <?php echo $client->nom?></h2>
 <!--RESUM-->
 <div>
 	<b>Resum</b>:
@@ -113,7 +113,7 @@
 </div>
 
 <!--TAULA COMICS-->
-<table id=taulaComics><tr><td style=border:none><tr><td style=border:none>
+<table id=taulaComics><tr><td style=border:none>
 	<?php
 		/*maxim numero de comics*/$n=current(mysql_fetch_assoc(mysql_query("SELECT MAX(numero) FROM comics")));
 		/*numeros*/for($i=1;$i<=$n;$i++){echo "<th>$i";}
@@ -144,7 +144,7 @@
 					}
 				}
 			}
-			echo "<td style=border:none>
+			echo "<td>
 					<button onclick=esborraComic($ultim)>-1</button> 
 					<button onclick=nouComic($serie->id,$seguent)>+1</button>";
 		}
