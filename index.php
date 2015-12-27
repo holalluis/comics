@@ -38,7 +38,6 @@
 		$compra=new stdClass;
 		$compra->id=$row['id'];
 		$compra->id_comic=$row['id_comic'];
-		$compra->data=$row['data'];
 		$compres[]=$compra;
 	}
 ?>
@@ -46,68 +45,17 @@
 	<?php include'meta.php'?>
 	<title>Còmics</title>
 	<link rel=stylesheet href=css.css>
-	<script>
-		/** Mostra el menu d'opcions pel comic "element"*/
-		function comicMenu(element,ev)
-		{
-			//amaga tots els altres comicMenus
-			var altres=document.querySelectorAll("div.comicMenu")
-			for(var i=0;i<altres.length;i++){altres[i].style.display='none';}
-			var id=element.id 
-			var titol=element.getAttribute('titol')
-			//nou div
-			var div=document.createElement('div')
-			div.className="comicMenu"
-			document.body.appendChild(div)
-			div.style.left=ev.pageX+"px"
-			div.style.top=ev.pageY+"px"
-			div.onclick=function(){div.parentNode.removeChild(div)}
-			/**omple div element*/
-			div.innerHTML="<div style=text-align:right><span>"+titol+"</span>&emsp;<span><button>X</button></span></div>"
-			if(element.getAttribute('estat')=='disponible')
-			{
-				div.innerHTML+="<button class=opcio onclick=comprarComic("+id+")>Comprar</button>"
-			}
-			if(element.getAttribute('estat')=='comprat')
-			{
-				var compra=element.getAttribute('compra')
-				div.innerHTML+="<button class=opcio onclick=esborraCompra("+compra+")>Esborra compra</button>";
-			}
-		}
-
-		/** Nou comic a la base de dades */
-		function nouComic(id_serie,numero)
-		{
-			window.location='bin/nouComic.php?id_serie='+id_serie+'&numero='+numero
-		}
-
-		/** Nova compra a la base de dades*/
-		function comprarComic(comic)
-		{
-			var id_client=<?php echo $client->id?>;
-			window.location="bin/comprarComic.php?id_client="+id_client+"&id_comic="+comic
-		}
-		/** Esborra comic i compres de la base de dades*/
-		function esborraComic(comic)
-		{
-			window.location="bin/esborraComic.php?id="+comic
-		}
-		/** Esborra compra a la base de dades*/
-		function esborraCompra(compra)
-		{
-			window.location="bin/esborraCompra.php?id="+compra
-		}
-	</script>
+	<script src=js.js></script>
 </head><body><center>
 <!--TRIA CLIENT--><?php include'triaClient.php'?>
-<!--TITLE--><h2 onclick=window.location.reload()>Còmics — <?php echo $client->nom?></h2>
+<!--TITLE--><h2 onclick=window.location.reload()>Client — <?php echo $client->nom?></h2>
 <!--RESUM-->
 <div>
 	<b>Resum</b>:
 	<?php
 		$ncomprats=count($compres);
 		$ndisponibles=count($comics)-$ncomprats;
-		echo "$ncomprats comprats, $ndisponibles disponibles. ";
+		echo "<span style=background:#af0>$ncomprats comprats</span>, <span style=background:yellow>$ndisponibles disponibles</span>. ";
 	?>
 	<b>Telèfon</b>: <?php echo $client->tel?>
 </div>
@@ -123,26 +71,31 @@
 			$ultim=1; 	//id comic
 			$seguent=1; //numero comic
 
-			echo "<tr><th style=text-align:left>$serie->nom";
+			echo "<tr><th style=text-align:left><a href=serie.php?serie=$serie->id>$serie->nom</a>";
 			for($j=1;$j<=$n;$j++)
 			{
-				//busca el comic
+				//busca el comic numero j
+				$existeix=false;
 				foreach($comics as $comic)
 				{
 					if($j==$comic->numero && $serie->id==$comic->id_serie)
 					{
+						$existeix=true;
 						echo "<td 
-								id=$comic->id 
+								comic=$comic->id 
 								num=$comic->numero 
+								client=$client->id
 								onclick=comicMenu(this,event)
 								estat=disponible 
 								titol='$serie->nom $comic->numero'> 
-								Pendent";
+								En venda
+								";
 						$seguent=$comic->numero+1;
 						$ultim=$comic->id;
 						break;
 					}
 				}
+				if(!$existeix){echo "<td estat='no-disponible'>No ha sortit";}
 			}
 			echo "<td>
 					<button onclick=esborraComic($ultim)>-1</button> 
@@ -153,7 +106,7 @@
 
 <!--ESBORRA CLIENT-->
 <div style="margin-top:4em">
-	<button style=background:red;font-size:15px onclick=esborraClient()>Esborra client &#9760;</button>
+	<button style="background:red;font-size:15px;border:1px solid #ccc;padding:0.5em" onclick=esborraClient()>Esborra client &#9760;</button>
 	<script>
 		function esborraClient()
 		{
@@ -173,9 +126,9 @@
 	?>
 	compres.forEach(function(compra)
 	{
-		var td=document.getElementById(compra.id_comic)
+		var td=document.querySelector("[comic='"+compra.id_comic+"']")
 		td.setAttribute('estat','comprat');
 		td.setAttribute('compra',compra.id);
-		td.innerHTML="&check;"
+		td.innerHTML="Comprat"
 	})
 </script>
