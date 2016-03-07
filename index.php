@@ -1,3 +1,4 @@
+<?php include'login.php'?>
 <?php include'mysql.php'?>
 <?php
 	//info del client

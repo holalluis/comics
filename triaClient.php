@@ -17,6 +17,8 @@
 		?>
 	</select>
 	<button onclick=mostraMenuNouClient(event)>+ Afegir nou client</button>
+	|||
+	<button onclick=window.location='bin/logout.php'>Sortir</button>
 </div>
 
 <script>
