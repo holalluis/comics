@@ -17,6 +17,8 @@
 		?>
 	</select>
 	<button onclick=mostraMenuNovaSerie(event)>+ Afegir nova serie</button>
+	|||
+	<button onclick=window.location='bin/logout.php'>Sortir</button>
 </div>
 
 <script>

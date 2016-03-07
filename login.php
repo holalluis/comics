@@ -17,7 +17,7 @@ if(!isset($_COOKIE['login']))
 {
 	?>
 		<center>
-		<h3>Inicia sessió</h3>
+		<h3>Còmics - Inicia sessió</h3>
 		<form method=POST>
 			<input type=password name=pass>
 			<button>Entra</button>
